@@ -25,4 +25,4 @@ jobs:
         run: >
           ansible-playbook -i 'localhost,' build/galaxy_deploy.yml
             -e "github_tag=${{ github.ref }}"
-            -e "ansible_galaxy_token=${{ secrets.ANSIBLE_GALAXY_APIKEY }}"
+            -e "ansible_galaxy_apikey=${{ secrets.ANSIBLE_GALAXY_APIKEY }}"

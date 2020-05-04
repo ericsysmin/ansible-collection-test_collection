@@ -6,10 +6,10 @@
     # This should be set via the command line at runtime.
     tag: "{{ github_tag.split('/')[-1] }}"
   tasks:
-    - name: Ensure that the ANSIBLE_GALAXY_TOKEN exists
+    - name: Ensure that the ansible_galaxy_apikey exists
       assert:
         that:
-          - ansible_galaxy_token | length > 0
+          - ansible_galaxy_apikey | length > 0
     - name: Template out the galaxy.yml file.
       template:
         src: templates/galaxy.yml.j2
@@ -24,7 +24,7 @@
       command: >
         ansible-galaxy collection publish
           ./ericsysmin-test_collection-{{ tag }}.tar.gz
-          --api-key={{ ansible_galaxy_token }}
+          --api-key={{ ansible_galaxy_apikey }}
       args:
         chdir: ../
       when: galaxy_yml.changed
