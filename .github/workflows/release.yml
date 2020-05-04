@@ -22,5 +22,6 @@ jobs:
           pip install ansible
 
       - name: Run the Ansible Galaxy deploy playbook
-        run: >
-          ansible-playbook -i 'localhost,' build/galaxy_deploy.yml -e "github_tag=${{ github.ref }}" -e "ansible_galaxy_apikey=${{ secrets.ANSIBLE_GALAXY_APIKEY }}"
+        run: ansible-playbook -i 'localhost,' build/galaxy_deploy.yml
+          -e "github_tag=${{ github.ref }}"
+          -e "ansible_galaxy_apikey=${{ secrets.ANSIBLE_GALAXY_APIKEY }}"
