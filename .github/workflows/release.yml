@@ -1,0 +1,28 @@
+name: "release"
+on:
+  release:
+    types:
+      - created
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      ANSIBLE_FORCE_COLOR: 1
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install ansible
+
+      - name: Run role test
+        run: >-
+          ansible-playbook -i 'localhost,' build/galaxy_deploy.yml
+            -e "github_tag=${{ github.ref }}"
+            -e "ansible_galaxy_token=${{ secrets.ANSIBLE_GALAXY_TOKEN }}"
