@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    # This should be set via the command line at runtime.
+    tag: "{{ github_tag.split('/')[-1] }}"
+  tasks:
+    - name: Ensure that the ansible_galaxy_apikey exists
+      assert:
+        that:
+          - ansible_galaxy_apikey | length > 0
+    - name: Template out the galaxy.yml file.
+      template:
+        src: templates/galaxy.yml.j2
+        dest: ../galaxy.yml
+      register: galaxy_yml
+    - name: Build the collection. # noqa 503
+      command: ansible-galaxy collection build
+      args:
+        chdir: ../
+      when: galaxy_yml.changed
+    - name: Publish the collection. # noqa 503
+      command: >
+        ansible-galaxy collection publish
+          ./ericsysmin-test_collection-{{ tag }}.tar.gz
+          --api-key={{ ansible_galaxy_apikey }}
+      args:
+        chdir: ../
+      when: galaxy_yml.changed
